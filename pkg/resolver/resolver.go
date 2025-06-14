@@ -1,4 +1,4 @@
-package api
+package resolver
 
 // ConfigResolver defines the interface for resolving user-specific configuration.
 type ConfigResolver interface {
