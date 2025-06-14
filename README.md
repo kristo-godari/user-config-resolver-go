@@ -1,0 +1,73 @@
+# User Config Resolver Library (Go)
+
+This Go library mirrors the features of the [Java version](https://github.com/kristo-godari/user-config-resolver-java). It resolves JSON configurations based on user groups and custom expressions.
+
+## Use Case
+You may want to adapt application behaviour for different user groups. Instead of encoding logic in code, you can keep it in configuration so that updating it does not require a redeploy.
+
+## Features
+- **User Group-Based Overrides:** override configuration properties when a user is in specific groups.
+- **Custom Expression Support:** use simple expressions to create complex conditions.
+- **Resolve to Structs or JSON:** resolve configuration into Go structs or as JSON strings.
+
+## Installation
+```bash
+go get github.com/example/user-config-resolver-go/pkg/jsonresolver
+```
+
+## Define Configuration Override Rules
+Create a JSON configuration that describes your default properties and override rules.
+
+```json
+{
+  "override-rules": [
+    {
+      "user-is-in-all-groups": ["paid-user", "premium-user"],
+      "override": {"show-adds": false}
+    },
+    {
+      "user-is-in-any-group": ["new-joiner"],
+      "override": {
+        "show-new-joiner-banner": true,
+        "show-full-layout": false
+      }
+    },
+    {
+      "user-is-none-of-the-groups": ["button-blue"],
+      "override": {"button-color": "gray"}
+    },
+    {
+      "custom-expression": "#user.contains('discount') or #user.contains('black-friday')",
+      "override": {
+        "shop.no-of-products": 20,
+        "shop.price-multiplier": 0
+      }
+    }
+  ],
+  "default-properties": {
+    "show-new-joiner-banner": false,
+    "show-adds": true,
+    "show-full-layout": true,
+    "button-color": "blue",
+    "shop": {
+      "no-of-products": 10,
+      "price-multiplier": 2
+    }
+  }
+}
+```
+
+Override rules are applied from top to bottom.
+
+## Resolving Configuration
+```go
+svc := jsonresolver.New()
+var result MyConfigStruct
+err := svc.ResolveConfigFromInto(configString, groups, &result)
+```
+Alternatively you can store the configuration using `SetConfigToResolve` and then call `ResolveConfig` or `ResolveConfigInto`.
+
+## License
+This library is released under the MIT License.
+
+
