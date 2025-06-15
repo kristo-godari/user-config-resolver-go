@@ -23,7 +23,7 @@ type ExampleConfig struct {
 
 func main() {
 	// Read the configuration file.
-	raw, err := os.ReadFile("example/config.json")
+	raw, err := os.ReadFile("config.json")
 	if err != nil {
 		panic(err)
 	}
