@@ -11,15 +11,17 @@ type JsonConfigResolverService struct{}
 
 func New() *JsonConfigResolverService { return &JsonConfigResolverService{} }
 
-func (s *JsonConfigResolverService) ResolveConfigFrom(cfg string, groups []string) (string, error) {
+// Resolve returns the resolved configuration as a JSON string.
+func (s *JsonConfigResolverService) Resolve(cfg string, groups []string) (string, error) {
 	var out string
-	if err := s.ResolveConfigFromInto(cfg, groups, &out); err != nil {
+	if err := s.ResolveInto(cfg, groups, &out); err != nil {
 		return "", err
 	}
 	return out, nil
 }
 
-func (s *JsonConfigResolverService) ResolveConfigFromInto(cfg string, groups []string, target any) error {
+// ResolveInto unmarshals the resolved configuration into target.
+func (s *JsonConfigResolverService) ResolveInto(cfg string, groups []string, target any) error {
 	var c resolver.Config
 	dec := json.NewDecoder(strings.NewReader(cfg))
 	dec.DisallowUnknownFields()

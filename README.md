@@ -73,7 +73,7 @@ import resjson "github.com/example/user-config-resolver-go/resolver/json"
 
 svc := resjson.New()
 var result MyConfigStruct
-err := svc.ResolveConfigFromInto(configString, groups, &result)
+err := svc.ResolveInto(configString, groups, &result)
 ```
 
 

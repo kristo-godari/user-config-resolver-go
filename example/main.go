@@ -33,7 +33,7 @@ func main() {
 
 	svc := resjson.New()
 	var result ExampleConfig
-	if err := svc.ResolveConfigFromInto(string(raw), groups, &result); err != nil {
+	if err := svc.ResolveInto(string(raw), groups, &result); err != nil {
 		panic(err)
 	}
 
