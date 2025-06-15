@@ -1,4 +1,4 @@
-package jsonresolver
+package resolver
 
 type Config struct {
 	OverrideRules     []OverrideRule         `json:"override-rules"`
