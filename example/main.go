@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	jsonresolver "github.com/example/user-config-resolver-go/pkg/resolver/json"
+	resjson "github.com/example/user-config-resolver-go/resolver/json"
 )
 
 type ShopConfig struct {
@@ -31,7 +31,7 @@ func main() {
 	// Groups that the current user belongs to.
 	groups := []string{"paid-user", "discount"}
 
-	svc := jsonresolver.New()
+	svc := resjson.New()
 	var result ExampleConfig
 	if err := svc.ResolveConfigFromInto(string(raw), groups, &result); err != nil {
 		panic(err)

@@ -12,11 +12,11 @@ You may want to adapt application behaviour for different user groups. Instead o
 
 ## Installation
 ```bash
-go get github.com/example/user-config-resolver-go/pkg/resolver/json
+go get github.com/example/user-config-resolver-go/resolver/json
 ```
 
 ### Extending With Custom Formats
-Implement the `resolver.ConfigResolver` interface in your own package and provide the parsing logic for the desired format (for example XML). Place the implementation under `pkg/resolver/<format>` so it can be imported as `github.com/example/user-config-resolver-go/pkg/resolver/<format>`.
+Implement the `resolver.ConfigResolver` interface in your own package and provide the parsing logic for the desired format (for example XML). Place the implementation under `resolver/<format>` so it can be imported as `github.com/example/user-config-resolver-go/resolver/<format>`.
 
 ## Define Configuration Override Rules
 Create a JSON configuration that describes your default properties and override rules.
@@ -64,7 +64,7 @@ Override rules are applied from top to bottom.
 
 ## Resolving Configuration
 ```go
-import resjson "github.com/example/user-config-resolver-go/pkg/resolver/json"
+import resjson "github.com/example/user-config-resolver-go/resolver/json"
 
 svc := resjson.New()
 var result MyConfigStruct
