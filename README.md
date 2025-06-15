@@ -75,7 +75,7 @@ svc := resjson.New()
 var result MyConfigStruct
 err := svc.ResolveConfigFromInto(configString, groups, &result)
 ```
-Alternatively you can store the configuration using `SetConfigToResolve` and then call `ResolveConfig` or `ResolveConfigInto`.
+
 
 ## Example
 Run the example to see the resolver in action:

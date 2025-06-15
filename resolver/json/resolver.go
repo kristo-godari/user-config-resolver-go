@@ -2,33 +2,14 @@ package json
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 
 	"github.com/example/user-config-resolver-go/resolver"
 )
 
-type JsonConfigResolverService struct {
-	configToResolve string
-}
+type JsonConfigResolverService struct{}
 
 func New() *JsonConfigResolverService { return &JsonConfigResolverService{} }
-
-func (s *JsonConfigResolverService) SetConfigToResolve(config string) { s.configToResolve = config }
-
-func (s *JsonConfigResolverService) ResolveConfig(groups []string) (string, error) {
-	if s.configToResolve == "" {
-		return "", resolver.ConfigResolverError{Err: fmt.Errorf("config to resolve is empty")}
-	}
-	return s.ResolveConfigFrom(s.configToResolve, groups)
-}
-
-func (s *JsonConfigResolverService) ResolveConfigInto(groups []string, target any) error {
-	if s.configToResolve == "" {
-		return resolver.ConfigResolverError{Err: fmt.Errorf("config to resolve is empty")}
-	}
-	return s.ResolveConfigFromInto(s.configToResolve, groups, target)
-}
 
 func (s *JsonConfigResolverService) ResolveConfigFrom(cfg string, groups []string) (string, error) {
 	var out string
