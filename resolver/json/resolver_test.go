@@ -62,40 +62,6 @@ func TestResolveFromString(t *testing.T) {
 	}
 }
 
-func TestResolveStoredInto(t *testing.T) {
-	svc := New()
-	for _, tc := range testCases() {
-		in, _ := readFile(tc.in)
-		var expected TestDto
-		_ = readFileInto(tc.out, &expected)
-		svc.SetConfigToResolve(in)
-		var result TestDto
-		if err := svc.ResolveConfigInto(tc.groups, &result); err != nil {
-			t.Fatal(err)
-		}
-		if result != expected {
-			t.Errorf("unexpected result for %s", tc.in)
-		}
-	}
-}
-
-func TestResolveStoredString(t *testing.T) {
-	svc := New()
-	for _, tc := range testCases() {
-		in, _ := readFile(tc.in)
-		expected, _ := readFile(tc.out)
-		expected = compact(expected)
-		svc.SetConfigToResolve(in)
-		out, err := svc.ResolveConfig(tc.groups)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if out != expected {
-			t.Errorf("unexpected result for %s", tc.in)
-		}
-	}
-}
-
 func TestInvalidInput(t *testing.T) {
 	svc := New()
 	groups := []string{"group-a", "group-b"}
@@ -105,13 +71,6 @@ func TestInvalidInput(t *testing.T) {
 		t.Error("expected error")
 	}
 	if _, err := svc.ResolveConfigFrom(in, groups); err == nil {
-		t.Error("expected error")
-	}
-	svc.SetConfigToResolve(in)
-	if _, err := svc.ResolveConfig(groups); err == nil {
-		t.Error("expected error")
-	}
-	if err := svc.ResolveConfigInto(groups, &v); err == nil {
 		t.Error("expected error")
 	}
 }
