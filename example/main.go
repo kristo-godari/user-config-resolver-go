@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/example/user-config-resolver-go/pkg/jsonresolver"
+	jsonresolver "github.com/example/user-config-resolver-go/pkg/resolver/json"
 )
 
 type ShopConfig struct {
