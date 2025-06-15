@@ -1,6 +1,10 @@
 # User Config Resolver Library (Go)
 
+User Config Resolver is a lightweight feature flag and configuration override library for Go. It helps you customise application behaviour by resolving settings for specific user groups or segments. Use it for targeted feature toggles, A/B testing, dynamic configuration or other personalisation scenarios.
+
 This Go library mirrors the features of the [Java version](https://github.com/kristo-godari/user-config-resolver-java). It resolves user configuration based on user groups and custom expressions. The resolver supports pluggable input formats and ships with a JSON implementation out of the box.
+
+The resolver can drive feature flags and configuration overrides without touching your code. Load a JSON file with override rules, provide the groups for a given user and receive the final settings as structs or raw JSON. Embedding the library into Go microservices or command line tools is straightforward.
 
 ## Use Case
 You may want to adapt application behaviour for different user groups. Instead of encoding logic in code, you can keep it in configuration so that updating it does not require a redeploy.
@@ -8,6 +12,7 @@ You may want to adapt application behaviour for different user groups. Instead o
 ## Features
 - **User Group-Based Overrides:** override configuration properties when a user is in specific groups.
 - **Custom Expression Support:** use simple expressions to create complex conditions.
+- **Feature Flags & A/B Testing:** toggle features or run experiments without redeploying your application.
 - **Resolve to Structs or JSON:** resolve configuration into Go structs or as JSON strings.
 
 ## Installation
@@ -83,5 +88,8 @@ go run ./example
 
 ## License
 This library is released under the MIT License.
+
+### Keywords
+feature flags, configuration override, dynamic configuration, user segments, Go library, A/B testing
 
 
