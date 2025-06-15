@@ -7,13 +7,19 @@ import (
 	"github.com/Knetic/govaluate"
 )
 
-// ApplyRules applies override rules to the provided configuration based on user groups.
-func ApplyRules(groups []string, c *Config) {
+// ApplyRules returns a new configuration with all matching rules applied.
+// The original configuration is not modified.
+func ApplyRules(groups []string, c *Config) Config {
+	if c == nil {
+		return Config{}
+	}
+	out := Config{DefaultProperties: copyMap(c.DefaultProperties), OverrideRules: c.OverrideRules}
 	for _, r := range c.OverrideRules {
 		if ruleApplies(groups, r) {
-			overrideProperties(c.DefaultProperties, r.Override)
+			overrideProperties(out.DefaultProperties, r.Override)
 		}
 	}
+	return out
 }
 
 func ruleApplies(groups []string, r OverrideRule) bool {
@@ -102,6 +108,43 @@ func toAnySlice(in []string) []interface{} {
 	out := make([]interface{}, len(in))
 	for i, v := range in {
 		out[i] = v
+	}
+	return out
+}
+
+// copyMap performs a deep copy of a map used for properties.
+func copyMap(m map[string]interface{}) map[string]interface{} {
+	if m == nil {
+		return nil
+	}
+	out := make(map[string]interface{}, len(m))
+	for k, v := range m {
+		switch val := v.(type) {
+		case map[string]interface{}:
+			out[k] = copyMap(val)
+		case []interface{}:
+			out[k] = copySlice(val)
+		default:
+			out[k] = val
+		}
+	}
+	return out
+}
+
+func copySlice(s []interface{}) []interface{} {
+	if s == nil {
+		return nil
+	}
+	out := make([]interface{}, len(s))
+	for i, v := range s {
+		switch val := v.(type) {
+		case map[string]interface{}:
+			out[i] = copyMap(val)
+		case []interface{}:
+			out[i] = copySlice(val)
+		default:
+			out[i] = val
+		}
 	}
 	return out
 }

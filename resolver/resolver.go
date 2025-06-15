@@ -2,11 +2,10 @@ package resolver
 
 // ConfigResolver defines the interface for resolving user-specific configuration.
 type ConfigResolver interface {
-	SetConfigToResolve(config string)
-	ResolveConfig(userGroups []string) (string, error)
-	ResolveConfigInto(userGroups []string, target any) error
-	ResolveConfigFrom(config string, userGroups []string) (string, error)
-	ResolveConfigFromInto(config string, userGroups []string, target any) error
+	ResolveStringToString(input string, groups []string) (string, error)
+	ResolveStringToStruct(input string, groups []string, out any) error
+	ResolveStructToString(cfg *Config, groups []string) (string, error)
+	ResolveStructToStruct(cfg *Config, groups []string, out any) error
 }
 
 type ConfigResolverError struct{ Err error }

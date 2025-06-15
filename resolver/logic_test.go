@@ -15,10 +15,14 @@ func TestApplyRules(t *testing.T) {
 		},
 	}
 	groups := []string{"a", "b"}
-	ApplyRules(groups, &c)
-	foo := c.DefaultProperties["foo"].(map[string]interface{})
+	resolved := ApplyRules(groups, &c)
+	foo := resolved.DefaultProperties["foo"].(map[string]interface{})
 	if foo["bar"] != 2 {
 		t.Fatalf("expected override to apply")
+	}
+	origFoo := c.DefaultProperties["foo"].(map[string]interface{})
+	if origFoo["bar"] != 1 {
+		t.Fatalf("original config was mutated")
 	}
 }
 

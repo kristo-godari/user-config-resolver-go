@@ -1,6 +1,7 @@
 package json
 
 import "testing"
+import "github.com/example/user-config-resolver-go/resolver"
 
 func testCases() []struct {
 	groups  []string
@@ -19,7 +20,7 @@ func testCases() []struct {
 	}
 }
 
-func TestResolveFromInto(t *testing.T) {
+func TestResolveStringToStruct(t *testing.T) {
 	svc := New()
 	for _, tc := range testCases() {
 		in, err := readFile(tc.in)
@@ -31,7 +32,7 @@ func TestResolveFromInto(t *testing.T) {
 			t.Fatal(err)
 		}
 		var result TestDto
-		if err := svc.ResolveConfigFromInto(in, tc.groups, &result); err != nil {
+		if err := svc.ResolveStringToStruct(in, tc.groups, &result); err != nil {
 			t.Fatal(err)
 		}
 		if result != expected {
@@ -40,7 +41,7 @@ func TestResolveFromInto(t *testing.T) {
 	}
 }
 
-func TestResolveFromString(t *testing.T) {
+func TestResolveStringToString(t *testing.T) {
 	svc := New()
 	for _, tc := range testCases() {
 		in, err := readFile(tc.in)
@@ -52,7 +53,7 @@ func TestResolveFromString(t *testing.T) {
 			t.Fatal(err)
 		}
 		expected = compact(expected)
-		out, err := svc.ResolveConfigFrom(in, tc.groups)
+		out, err := svc.ResolveStringToString(in, tc.groups)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -62,15 +63,19 @@ func TestResolveFromString(t *testing.T) {
 	}
 }
 
-func TestResolveStoredInto(t *testing.T) {
+func TestResolveStructToStruct(t *testing.T) {
 	svc := New()
 	for _, tc := range testCases() {
-		in, _ := readFile(tc.in)
+		var cfg resolver.Config
+		if err := readFileInto(tc.in, &cfg); err != nil {
+			t.Fatal(err)
+		}
 		var expected TestDto
-		_ = readFileInto(tc.out, &expected)
-		svc.SetConfigToResolve(in)
+		if err := readFileInto(tc.out, &expected); err != nil {
+			t.Fatal(err)
+		}
 		var result TestDto
-		if err := svc.ResolveConfigInto(tc.groups, &result); err != nil {
+		if err := svc.ResolveStructToStruct(&cfg, tc.groups, &result); err != nil {
 			t.Fatal(err)
 		}
 		if result != expected {
@@ -79,14 +84,14 @@ func TestResolveStoredInto(t *testing.T) {
 	}
 }
 
-func TestResolveStoredString(t *testing.T) {
+func TestResolveStructToString(t *testing.T) {
 	svc := New()
 	for _, tc := range testCases() {
-		in, _ := readFile(tc.in)
+		var cfg resolver.Config
+		_ = readFileInto(tc.in, &cfg)
 		expected, _ := readFile(tc.out)
 		expected = compact(expected)
-		svc.SetConfigToResolve(in)
-		out, err := svc.ResolveConfig(tc.groups)
+		out, err := svc.ResolveStructToString(&cfg, tc.groups)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -101,17 +106,16 @@ func TestInvalidInput(t *testing.T) {
 	groups := []string{"group-a", "group-b"}
 	in, _ := readFile("invalid-config/input.json")
 	var v TestDto
-	if err := svc.ResolveConfigFromInto(in, groups, &v); err == nil {
+	if err := svc.ResolveStringToStruct(in, groups, &v); err == nil {
 		t.Error("expected error")
 	}
-	if _, err := svc.ResolveConfigFrom(in, groups); err == nil {
+	if _, err := svc.ResolveStringToString(in, groups); err == nil {
 		t.Error("expected error")
 	}
-	svc.SetConfigToResolve(in)
-	if _, err := svc.ResolveConfig(groups); err == nil {
+	if err := svc.ResolveStructToStruct(nil, groups, &v); err == nil {
 		t.Error("expected error")
 	}
-	if err := svc.ResolveConfigInto(groups, &v); err == nil {
+	if _, err := svc.ResolveStructToString(nil, groups); err == nil {
 		t.Error("expected error")
 	}
 }

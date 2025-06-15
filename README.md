@@ -8,7 +8,8 @@ You may want to adapt application behaviour for different user groups. Instead o
 ## Features
 - **User Group-Based Overrides:** override configuration properties when a user is in specific groups.
 - **Custom Expression Support:** use simple expressions to create complex conditions.
-- **Resolve to Structs or JSON:** resolve configuration into Go structs or as JSON strings.
+ - **Resolve to Structs or JSON:** resolve configuration into Go structs or as JSON strings.
+ - **Reuse Parsed Configs:** pass a previously unmarshalled `resolver.Config` to avoid repeated JSON parsing.
 
 ## Installation
 ```bash
@@ -68,9 +69,14 @@ import resjson "github.com/example/user-config-resolver-go/resolver/json"
 
 svc := resjson.New()
 var result MyConfigStruct
-err := svc.ResolveConfigFromInto(configString, groups, &result)
+err := svc.ResolveStringToStruct(configString, groups, &result)
 ```
-Alternatively you can store the configuration using `SetConfigToResolve` and then call `ResolveConfig` or `ResolveConfigInto`.
+Alternatively you can unmarshal the JSON once into `resolver.Config` and resolve from the struct:
+```go
+var cfg resolver.Config
+_ = json.Unmarshal([]byte(configString), &cfg)
+err := svc.ResolveStructToStruct(&cfg, groups, &result)
+```
 
 ## Example
 Run the example to see the resolver in action:

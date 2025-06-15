@@ -8,51 +8,57 @@ import (
 	"github.com/example/user-config-resolver-go/resolver"
 )
 
-type JsonConfigResolverService struct {
-	configToResolve string
-}
+type JsonConfigResolverService struct{}
 
 func New() *JsonConfigResolverService { return &JsonConfigResolverService{} }
 
-func (s *JsonConfigResolverService) SetConfigToResolve(config string) { s.configToResolve = config }
-
-func (s *JsonConfigResolverService) ResolveConfig(groups []string) (string, error) {
-	if s.configToResolve == "" {
-		return "", resolver.ConfigResolverError{Err: fmt.Errorf("config to resolve is empty")}
-	}
-	return s.ResolveConfigFrom(s.configToResolve, groups)
-}
-
-func (s *JsonConfigResolverService) ResolveConfigInto(groups []string, target any) error {
-	if s.configToResolve == "" {
-		return resolver.ConfigResolverError{Err: fmt.Errorf("config to resolve is empty")}
-	}
-	return s.ResolveConfigFromInto(s.configToResolve, groups, target)
-}
-
-func (s *JsonConfigResolverService) ResolveConfigFrom(cfg string, groups []string) (string, error) {
+func (s *JsonConfigResolverService) ResolveStringToString(input string, groups []string) (string, error) {
 	var out string
-	if err := s.ResolveConfigFromInto(cfg, groups, &out); err != nil {
+	if err := s.ResolveStringToStruct(input, groups, &out); err != nil {
 		return "", err
 	}
 	return out, nil
 }
 
-func (s *JsonConfigResolverService) ResolveConfigFromInto(cfg string, groups []string, target any) error {
+func (s *JsonConfigResolverService) ResolveStringToStruct(input string, groups []string, out any) error {
 	var c resolver.Config
-	dec := json.NewDecoder(strings.NewReader(cfg))
+	dec := json.NewDecoder(strings.NewReader(input))
 	dec.DisallowUnknownFields()
 	if err := dec.Decode(&c); err != nil {
 		return resolver.ConfigResolverError{Err: err}
 	}
-	resolver.ApplyRules(groups, &c)
-	data, err := json.Marshal(c.DefaultProperties)
+	resolved := resolver.ApplyRules(groups, &c)
+	data, err := json.Marshal(resolved.DefaultProperties)
 	if err != nil {
 		return resolver.ConfigResolverError{Err: err}
 	}
-	if strPtr, ok := target.(*string); ok {
+	if strPtr, ok := out.(*string); ok {
 		*strPtr = string(data)
 		return nil
 	}
-	return json.Unmarshal(data, target)
+	return json.Unmarshal(data, out)
+}
+
+func (s *JsonConfigResolverService) ResolveStructToString(cfg *resolver.Config, groups []string) (string, error) {
+	var out string
+	if err := s.ResolveStructToStruct(cfg, groups, &out); err != nil {
+		return "", err
+	}
+	return out, nil
+}
+
+func (s *JsonConfigResolverService) ResolveStructToStruct(cfg *resolver.Config, groups []string, out any) error {
+	if cfg == nil {
+		return resolver.ConfigResolverError{Err: fmt.Errorf("config to resolve is empty")}
+	}
+	resolved := resolver.ApplyRules(groups, cfg)
+	data, err := json.Marshal(resolved.DefaultProperties)
+	if err != nil {
+		return resolver.ConfigResolverError{Err: err}
+	}
+	if strPtr, ok := out.(*string); ok {
+		*strPtr = string(data)
+		return nil
+	}
+	return json.Unmarshal(data, out)
 }
