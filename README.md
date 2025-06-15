@@ -1,6 +1,6 @@
 # User Config Resolver Library (Go)
 
-This Go library mirrors the features of the [Java version](https://github.com/kristo-godari/user-config-resolver-java). It resolves JSON configurations based on user groups and custom expressions.
+This Go library mirrors the features of the [Java version](https://github.com/kristo-godari/user-config-resolver-java). It resolves user configuration based on user groups and custom expressions. The resolver supports pluggable input formats and ships with a JSON implementation out of the box.
 
 ## Use Case
 You may want to adapt application behaviour for different user groups. Instead of encoding logic in code, you can keep it in configuration so that updating it does not require a redeploy.
@@ -12,8 +12,11 @@ You may want to adapt application behaviour for different user groups. Instead o
 
 ## Installation
 ```bash
-go get github.com/example/user-config-resolver-go/pkg/jsonresolver
+go get github.com/example/user-config-resolver-go/pkg/resolver/json
 ```
+
+### Extending With Custom Formats
+Implement the `resolver.ConfigResolver` interface in your own package and provide the parsing logic for the desired format (for example XML). Place the implementation under `pkg/resolver/<format>` so it can be imported as `github.com/example/user-config-resolver-go/pkg/resolver/<format>`.
 
 ## Define Configuration Override Rules
 Create a JSON configuration that describes your default properties and override rules.
@@ -61,7 +64,9 @@ Override rules are applied from top to bottom.
 
 ## Resolving Configuration
 ```go
-svc := jsonresolver.New()
+import resjson "github.com/example/user-config-resolver-go/pkg/resolver/json"
+
+svc := resjson.New()
 var result MyConfigStruct
 err := svc.ResolveConfigFromInto(configString, groups, &result)
 ```
