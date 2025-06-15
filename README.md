@@ -67,6 +67,15 @@ err := svc.ResolveConfigFromInto(configString, groups, &result)
 ```
 Alternatively you can store the configuration using `SetConfigToResolve` and then call `ResolveConfig` or `ResolveConfigInto`.
 
+## Example
+Run the example to see the resolver in action:
+
+```bash
+go run ./example
+```
+
+`example/main.go` reads `example/config.json`, resolves it for a user in the `paid-user` and `discount` groups and prints the resulting JSON configuration.
+
 ## License
 This library is released under the MIT License.
 

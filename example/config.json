@@ -1,0 +1,36 @@
+{
+  "override-rules": [
+    {
+      "user-is-in-all-groups": ["paid-user", "premium-user"],
+      "override": {"show-adds": false}
+    },
+    {
+      "user-is-in-any-group": ["new-joiner"],
+      "override": {
+        "show-new-joiner-banner": true,
+        "show-full-layout": false
+      }
+    },
+    {
+      "user-is-none-of-the-groups": ["button-blue"],
+      "override": {"button-color": "gray"}
+    },
+    {
+      "custom-expression": "#user.contains('discount') or #user.contains('black-friday')",
+      "override": {
+        "shop.no-of-products": 20,
+        "shop.price-multiplier": 0
+      }
+    }
+  ],
+  "default-properties": {
+    "show-new-joiner-banner": false,
+    "show-adds": true,
+    "show-full-layout": true,
+    "button-color": "blue",
+    "shop": {
+      "no-of-products": 10,
+      "price-multiplier": 2
+    }
+  }
+}
