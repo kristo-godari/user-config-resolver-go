@@ -11,6 +11,7 @@ func testCases() []struct {
 		in, out string
 	}{
 		{[]string{"group-a", "group-b"}, "user-in-all-groups/input.json", "user-in-all-groups/output.json"},
+		{[]string{"group-a"}, "user-not-in-all-groups/input.json", "user-not-in-all-groups/output.json"},
 		{[]string{"group-d"}, "user-in-any-groups/input.json", "user-in-any-groups/output.json"},
 		{[]string{"group-c"}, "user-in-no-groups/input.json", "user-in-no-groups/output.json"},
 		{[]string{"group-a", "group-b", "group-c"}, "user-in-different-groups/input.json", "user-in-different-groups/output.json"},
