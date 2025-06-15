@@ -1,4 +1,4 @@
-package jsonresolver
+package json
 
 import "testing"
 

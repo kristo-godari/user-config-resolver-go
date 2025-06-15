@@ -1,11 +1,11 @@
-package jsonresolver
+package json
 
 import (
 	"encoding/json"
 	"fmt"
 	"strings"
 
-	"github.com/example/user-config-resolver-go/pkg/resolver"
+	"github.com/example/user-config-resolver-go/resolver"
 )
 
 type JsonConfigResolverService struct {
@@ -18,14 +18,14 @@ func (s *JsonConfigResolverService) SetConfigToResolve(config string) { s.config
 
 func (s *JsonConfigResolverService) ResolveConfig(groups []string) (string, error) {
 	if s.configToResolve == "" {
-		return "", resolver.ConfigResolverError{fmt.Errorf("config to resolve is empty")}
+		return "", resolver.ConfigResolverError{Err: fmt.Errorf("config to resolve is empty")}
 	}
 	return s.ResolveConfigFrom(s.configToResolve, groups)
 }
 
 func (s *JsonConfigResolverService) ResolveConfigInto(groups []string, target any) error {
 	if s.configToResolve == "" {
-		return resolver.ConfigResolverError{fmt.Errorf("config to resolve is empty")}
+		return resolver.ConfigResolverError{Err: fmt.Errorf("config to resolve is empty")}
 	}
 	return s.ResolveConfigFromInto(s.configToResolve, groups, target)
 }
@@ -43,12 +43,12 @@ func (s *JsonConfigResolverService) ResolveConfigFromInto(cfg string, groups []s
 	dec := json.NewDecoder(strings.NewReader(cfg))
 	dec.DisallowUnknownFields()
 	if err := dec.Decode(&c); err != nil {
-		return resolver.ConfigResolverError{err}
+		return resolver.ConfigResolverError{Err: err}
 	}
 	resolver.ApplyRules(groups, &c)
 	data, err := json.Marshal(c.DefaultProperties)
 	if err != nil {
-		return resolver.ConfigResolverError{err}
+		return resolver.ConfigResolverError{Err: err}
 	}
 	if strPtr, ok := target.(*string); ok {
 		*strPtr = string(data)

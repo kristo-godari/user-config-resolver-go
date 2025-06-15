@@ -1,4 +1,4 @@
-package jsonresolver
+package json
 
 type TestDto struct {
 	Property1 int `json:"property1"`
